@@ -1,0 +1,219 @@
+.:
+README.md
+api/
+bun.lockb*
+components.json
+eslint.config.js
+estructura-completa.txt
+index.html
+package-lock.json
+package.json
+postcss.config.js
+public/
+server.js
+src/
+tailwind.config.ts
+tsconfig.app.json
+tsconfig.json
+tsconfig.node.json
+vercel.json
+vite.config.ts
+
+./api:
+agenda.js
+atenciones.js
+auth.js
+clientes.js
+dashboard.js
+empresas.js
+inventario.js
+mongodb.js
+perfiles.js
+profesionales.js
+reportes.js
+servicios.js
+usuarios.js
+
+./public:
+favicon.ico
+placeholder.svg
+robots.txt
+wolf-x-imagenes/
+wolfx-fondo.jpg
+
+./public/wolf-x-imagenes:
+Logo-wolfx.png
+fondo-app.jpg
+fondo-home.jpg
+fondo-panel.jpg
+
+./src:
+App.css
+App.tsx
+assets/
+components/
+context/
+global.d.ts
+hooks/
+index.css
+lib/
+main.tsx
+pages/
+vite-env.d.ts
+
+./src/assets:
+Logo-wolfx.png
+fonts/
+images (1).jpeg
+images (2).jpeg
+images (3).jpeg
+images (4).jpeg
+images.jpeg
+istockphoto-531328392-612x612.jpg
+
+./src/assets/fonts:
+AmbiguityInline.ttf
+
+./src/components:
+comisiones/
+layout/
+perfiles/
+service-order/
+ui/
+
+./src/components/comisiones:
+AccessDenied.tsx
+CommissionForm.tsx
+CommissionPageHeader.tsx
+CommissionRulesTable.tsx
+ProfessionalFilter.tsx
+
+./src/components/layout:
+MainLayout.tsx
+Navbar.tsx
+SalonLogo.tsx
+
+./src/components/perfiles:
+PageHeader.tsx
+PerfilesPage.tsx
+ProfileForm.tsx
+ProfileList.tsx
+SearchBar.tsx
+
+./src/components/service-order:
+ServiceOrderDetails.tsx
+ServiceOrderForm.tsx
+
+./src/components/ui:
+accordion.tsx
+alert-dialog.tsx
+alert.tsx
+aspect-ratio.tsx
+avatar.tsx
+badge.tsx
+breadcrumb.tsx
+button.tsx
+calendar.tsx
+card.tsx
+carousel.tsx
+chart.tsx
+checkbox.tsx
+collapsible.tsx
+command.tsx
+context-menu.tsx
+dialog.tsx
+drawer.tsx
+dropdown-menu.tsx
+form.tsx
+hover-card.tsx
+input-otp.tsx
+input.tsx
+label.tsx
+menubar.tsx
+navigation-menu.tsx
+pagination.tsx
+popover.tsx
+progress.tsx
+radio-group.tsx
+resizable.tsx
+scroll-area.tsx
+select.tsx
+separator.tsx
+sheet.tsx
+sidebar.tsx
+skeleton.tsx
+slider.tsx
+sonner.tsx
+switch.tsx
+table.tsx
+tabs.tsx
+textarea.tsx
+toast.tsx
+toaster.tsx
+toggle-group.tsx
+toggle.tsx
+tooltip.tsx
+use-toast.ts
+
+./src/context:
+EmpresaContext.tsx
+
+./src/hooks:
+use-mobile.tsx
+use-toast.ts
+
+./src/lib:
+utils.ts
+
+./src/pages:
+AgendarCita.tsx
+Citas.tsx
+Clientes.tsx
+Comisiones.tsx
+Dashboard.tsx
+Index.tsx
+Inventario.tsx
+Login.tsx
+NotFound.tsx
+Profesionales.tsx
+Reportes.tsx
+Servicios.tsx
+admin/
+home.tsx
+
+./src/pages/admin:
+AdminLogin.tsx
+AdminNavbar.tsx
+AdminPanel.tsx
+EmpresasAdmin.tsx
+PerfilesAdmin.tsx
+RegistroEmpresa.tsx
+UsuariosAdmin.tsx
+
+
+identificacion archivos.tsx > api.js
+
+Poseo 2 tipos de accesos en mi programa Gestion-peluqueria (multi empresa)
+1- Acceso Gestion = empresa > usuarios registrados
+2- Acceso al panel = se registra nuevas empreas, usuarios y definen perfiles de acceso a cada usuario.
+
+Seccion Gestion
+Dashboard.tsx     >   dashboard.js
+AgendarCita.tsx   >   agenda.js
+Citas.tsx         >   atenciones.js
+Clientes.tsx      >   citas.js
+Inventario.tsx    >   inventario.js
+Servicios.tsx     >   servicios.js
+Profesionales.tsx >   profesionales.js
+Reportes.tsx      >   reportes.js
+
+
+Seccion panel
+RegistroEmpresa.tsx  >  empresas.js
+UsuariosAdmin.tsx    >  usuarios.js
+PerfilesAdmin.tsx    >  perfiles.js
+
+Login.tsx       >  auth.js
+AdminLogin.tsx  >  auth.js
+
+mongodb.js
