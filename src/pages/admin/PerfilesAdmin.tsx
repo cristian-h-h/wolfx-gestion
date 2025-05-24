@@ -138,8 +138,7 @@ export default function PerfilesAdmin() {
         {/* Selector de empresa */}
         <div className="mb-6 max-w-xl mx-auto">
           <label className="block mb-2 text-2xl font-bold text-white">Selecciona la empresa</label>
-          <select
-            className="w-full p-3 rounded bg-gray-800 text-white text-lg"
+          <select className="w-full p-3 rounded bg-white/80 text-black text-lg" 
             value={empresaSeleccionada}
             onChange={e => setEmpresaSeleccionada(e.target.value)}
           >
@@ -154,7 +153,7 @@ export default function PerfilesAdmin() {
 
         {/* Solo mostrar el resto si hay empresa seleccionada */}
 {empresaSeleccionada ? (
-  <div className="bg-black text-white rounded-xl p-6 shadow-lg">
+  <div className="bg-white/90 text-black rounded-xl p-8 shadow-2x1 mt-6">
     <PageHeader onNewProfile={handleOpenNewProfileDialog} />
     <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
     {loading ? (

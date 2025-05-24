@@ -15,11 +15,34 @@ export default function AdminLogin() {
   const [recovering, setRecovering] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Primero intenta validar contra el backend
+    try {
+      const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (res.ok && (data.user.role === "superadmin" || data.user.role === "admin")) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        toast.success("Bienvenido al panel administrador");
+        setTimeout(() => {
+          navigate("/wolfx-admin/panel");
+        }, 1500);
+        return;
+      } else if (res.ok) {
+        toast.error("Sin permisos de administrador");
+        return;
+      }
+    } catch {
+      // Si falla la conexión, pasa a validación local
+    }
+    // Validación local como respaldo
     if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      localStorage.setItem("user", JSON.stringify({ email, role: "admin" }));
-      toast.success("Bienvenido al panel administrador");
+      localStorage.setItem("user", JSON.stringify({ email, role: "superadmin" }));
+      toast.success("Bienvenido al panel administrador (local)");
       setTimeout(() => {
         navigate("/wolfx-admin/panel");
       }, 1500);

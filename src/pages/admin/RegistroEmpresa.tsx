@@ -11,16 +11,22 @@ import AdminNavbar from "./AdminNavbar"; // Asegúrate que la ruta sea correcta
 export default function RegistroEmpresa() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    rut: "",
-    razonSocial: "",
-    nombreFantasia: "",
-    direccion: "",
-    adminNombre: "",
-    adminTelefono: "",
-    adminCorreo: "",
-    clienteTelefono: "",
-    logo: "",
-  });
+  rut: "",
+  razonSocial: "",
+  nombreFantasia: "",
+  direccion: "",
+  adminNombre: "",
+  adminTelefono: "",
+  adminCorreo: "",
+  clienteTelefono: "",
+  logo: "",
+  // Campos de control de arriendo:
+  arriendoActivo: true,
+  plan: "Básico",
+  montoMensual: 25000,
+  fechaUltimoPago: "",      // Puedes dejarlo vacío, el backend lo pondrá por defecto
+  fechaProximoPago: "",     // Igual que arriba
+});
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -194,10 +200,31 @@ export default function RegistroEmpresa() {
                   src={logoPreview}
                   alt="Logo Preview"
                   className="h-24 mt-2 rounded shadow border"
-                />
-              )}
-            </div>
-            <div className="pt-4 flex justify-center">
+              />
+            )}
+          </div>
+          <div>
+            <Label htmlFor="plan">Plan</Label>
+            <Input
+              id="plan"
+              name="plan"
+              value={form.plan}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="montoMensual">Monto Mensual</Label>
+            <Input
+              id="montoMensual"
+              name="montoMensual"
+              type="number"
+              value={form.montoMensual}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="pt-4 flex justify-center">
               <Button
                 type="submit"
                 className="px-8 py-3 rounded-full bg-salon-primary hover:bg-salon-secondary text-white font-bold text-lg shadow-lg"

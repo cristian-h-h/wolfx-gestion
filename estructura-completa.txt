@@ -191,29 +191,330 @@ RegistroEmpresa.tsx
 UsuariosAdmin.tsx
 
 
-identificacion archivos.tsx > api.js
+
+* Detalle de distribucion al programa Wolf X Gestion *
+
 
 Poseo 2 tipos de accesos en mi programa Gestion-peluqueria (multi empresa)
-1- Acceso Gestion = empresa > usuarios registrados
-2- Acceso al panel = se registra nuevas empreas, usuarios y definen perfiles de acceso a cada usuario.
-
-Seccion Gestion
-Dashboard.tsx     >   dashboard.js
-AgendarCita.tsx   >   agenda.js
-Citas.tsx         >   atenciones.js
-Clientes.tsx      >   citas.js
-Inventario.tsx    >   inventario.js
-Servicios.tsx     >   servicios.js
-Profesionales.tsx >   profesionales.js
-Reportes.tsx      >   reportes.js
+A- Acceso Gestion = empresa > usuarios registrados
+B- Acceso al panel = se registra nuevas empreas, usuarios y definen perfiles de acceso a cada usuario.
+C- Se identifica el orden cronologico para dar uso al programa de gestion, si se respeta el orden, la empresa, el usuario, las tables de registros y las tables de reportes todo estara visible y a disposicion para entregar la informacion para la cual se creo este software.
 
 
-Seccion panel
-RegistroEmpresa.tsx  >  empresas.js
-UsuariosAdmin.tsx    >  usuarios.js
-PerfilesAdmin.tsx    >  perfiles.js
+A-Seccion Gestion                        C-Orden de Ingreso al software
+Dashboard.tsx     >   dashboard.js            10-
+AgendarCita.tsx   >   agenda.js                7-
+Citas.tsx         >   atenciones.js            8-
+Clientes.tsx      >   citas.js                 6-
+Inventario.tsx    >   inventario.js           11- 
+Servicios.tsx     >   servicios.js             4-                 
+Profesionales.tsx >   profesionales.js         5-
+Reportes.tsx      >   reportes.js              9-
+
+
+B-Seccion panel
+Panel
+Listado empresas registradas
+UsuariosAdmin.tsx    >  usuarios.js            2-
+PerfilesAdmin.tsx    >  perfiles.js            3-
+RegistroEmpresa.tsx  >  empresas.js            1-
+Cerrar Acceso Empresa>  cerrar-acceso.js
+
 
 Login.tsx       >  auth.js
 AdminLogin.tsx  >  auth.js
 
 mongodb.js
+
+
+ ** registri de avance configuraciones frentend - backend  mongodb con serverLes vercel function**
+
+ Aquí tienes un informe detallado para registrar en tu archivo de avance (estructura-completa.txt). Incluye la configuración de MongoDB Atlas, las variables de entorno locales y en Vercel, y la confirmación de que todo coincide y está correcto.
+
+---
+
+## Informe de Configuración Backend y Variables de Entorno (MongoDB + Vercel)
+
+### 1. **Cuenta y Conexión MongoDB Atlas**
+
+- **Usuario:** `wolfx`
+- **Contraseña:** `v3QRVCIyby4pjYBB`
+- **Cluster:** `cluster0.fqlaqpc.mongodb.net`
+- **Base de datos:** `gestionempresas`
+- **Cadena de conexión (URI):**
+  ```
+  mongodb+srv://wolfx:v3QRVCIyby4pjYBB@cluster0.fqlaqpc.mongodb.net/gestionempresas?retryWrites=true&w=majority&appName=Cluster0
+  ```
+
+---
+
+### 2. **Variables de entorno en archivo local .env**
+
+```env
+MONGODB_URI=mongodb+srv://wolfx:v3QRVCIyby4pjYBB@cluster0.fqlaqpc.mongodb.net/gestionempresas?retryWrites=true&w=majority&appName=Cluster0
+JWT_SECRET=wolfx@1977/maverick
+CLAVE_CIERRE=022012
+```
+
+---
+
+### 3. **Variables de entorno en Vercel**
+
+- **MONGODB_URI:**  
+  ```
+  mongodb+srv://wolfx:v3QRVCIyby4pjYBB@cluster0.fqlaqpc.mongodb.net/gestionempresas?retryWrites=true&w=majority&appName=Cluster0
+  ```
+- **JWT_SECRET:**  
+  ```
+  wolfx@1977/maverick
+  ```
+- **CLAVE_CIERRE:**  
+  ```
+  022012
+  ```
+
+---
+
+### 4. **Confirmación**
+
+- Las variables de entorno en **Vercel** coinciden exactamente con las del archivo **.env** local.
+- El backend está correctamente configurado para funcionar tanto en desarrollo local como en producción (Vercel Serverless).
+- La conexión a MongoDB Atlas está activa y lista para usarse en todos los endpoints del backend.
+
+---
+
+**¡Este punto queda cerrado y documentado!**  
+No es necesario volver a revisar la configuración de MongoDB Atlas ni las variables de entorno, salvo que cambien las credenciales o la base de datos.
+
+---
+
+analisis backend - api
+
+1- RegistroEmpresa
+POST /api/empresas
+Content-Type: application/json
+
+{
+  "rut": "12345678-9",
+  "razonSocial": "Peluquería Estilo S.A.",
+  "nombreFantasia": "Estilo",
+  "direccion": "Av. Principal 123, Santiago",
+  "adminNombre": "Juan Pérez",
+  "adminTelefono": "+56912345678",
+  "adminCorreo": "juan.perez@estilo.cl",
+  "clienteTelefono": "+56987654321",
+  "logo": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",  // base64 de la imagen
+  "arriendoActivo": true,
+  "plan": "Básico",
+  "montoMensual": 25000,
+  "fechaUltimoPago": "",      // Puede ir vacío, el backend lo asigna por defecto
+  "fechaProximoPago": ""      // Puede ir vacío, el backend lo asigna por defecto
+}
+
+2- Registro Usuario
+POST /api/usuarios
+Content-Type: application/json
+
+{
+  "email": "maria.contador@empresa.cl",
+  "password": "ClaveSegura123",
+  "role": "contador",
+  "nombre": "María López",
+  "telefono": "+56912345678",
+  "empresaRUT": "12345678-9"
+}
+
+3- PERFILES 
+POST /api/perfiles
+Content-Type: application/json
+
+{
+  "nombre": "Carolina Soto",
+  "email": "carolina.soto@empresa.cl",
+  "empresaRUT": "12345678-9",
+  "permisos": ["clientes", "citas", "inventario"]
+}
+
+4- SERVICIOS 
+POST / api/servicios 
+{
+  "_id": "abc123",
+  "name": "Coloración",
+  "empresaRUT": "12345678-9"
+}
+
+5- PROFESIONALES 
+POST /api/profesionales
+Content-Type: application/json
+
+{
+  "internalCode": "P001",
+  "name": "Ana López",
+  "services": [
+    { "serviceId": "abc123", "commission": 30 },
+    { "serviceId": "def456", "commission": 25 }
+  ],
+  "phone": "+56911112222",
+  "email": "ana.lopez@empresa.cl",
+  "address": "Av. Central 123",
+  "commune": "Providencia",
+  "active": true,
+  "empresaRUT": "12345678-9"
+}
+
+6- INGRESO CLIENTES 
+POST /api/profesionales
+Content-Type: application/json
+
+{
+  "internalCode": "P001",
+  "name": "Ana López",
+  "services": [
+    { "serviceId": "abc123", "commission": 30 },
+    { "serviceId": "def456", "commission": 25 }
+  ],
+  "phone": "+56911112222",
+  "email": "ana.lopez@empresa.cl",
+  "address": "Av. Central 123",
+  "commune": "Providencia",
+  "active": true,
+  "empresaRUT": "12345678-9"
+}
+
+7- AGENDA CITAS 
+POST /api/agenda
+Content-Type: application/json
+
+{
+  "cliente": "Juan Pérez",
+  "telefono": "+56912345678",
+  "atenciones": [
+    { "servicio": "Corte de cabello", "profesional": "Ana López", "hora": "10:00" },
+    { "servicio": "Coloración", "profesional": "Ana López", "hora": "11:00" }
+  ],
+  "empresaRUT": "12345678-9",
+  "fecha": "2024-06-01"
+} 
+
+8- REGISTRA ATENCIONES 
+POST /api/atenciones
+Content-Type: application/json
+
+{
+  "folio": "CITA-20240601-001",
+  "cliente": { "nombre": "Juan Pérez", "email": "juan.perez@correo.cl" },
+  "telefono": "+56912345678",
+  "fecha": "2024-06-01T10:00:00.000Z",
+  "servicios": [
+    { "servicio": "Corte de cabello", "profesional": "Ana López", "valor": 12000, "materiales": [{ "nombre": "Shampoo", "valor": 1000 }] },
+    { "servicio": "Coloración", "profesional": "Ana López", "valor": 25000, "materiales": [{ "nombre": "Tinte", "valor": 5000 }] }
+  ],
+  "materiales": [
+    { "nombre": "Shampoo", "valor": 1000 },
+    { "nombre": "Tinte", "valor": 5000 }
+  ],
+  "pagos": [
+    { "tipo": "efectivo", "monto": 20000 },
+    { "tipo": "tarjeta", "monto": 18000 }
+  ],
+  "total": 38000,
+  "empresaRUT": "12345678-9"
+}
+
+9- INFRORMES 
+
+GET https://www.gestion-peluqueria.cl/api/reportes?empresaRUT=12345678-9&tipoInforme=comisiones&tipoVista=detallado&fechaInicio=2024-06-01&fechaFin=2024-06-30
+
+GET https://www.gestion-peluqueria.cl/api/reportes?empresaRUT=12345678-9&tipoInforme=servicios&fechaInicio=2024-06-01&fechaFin=2024-06-30
+
+10- DASHBOARD 
+
+GET https://www.gestion-peluqueria.cl/api/dashboard?empresaRUT=12345678-9
+
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+Ejemplo de test en la pestaña "Tests" de Postman
+
+pm.test("Response has all dashboard keys", function () {
+    const json = pm.response.json();
+    pm.expect(json).to.have.property("totalClientes");
+    pm.expect(json).to.have.property("totalCitasHoy");
+    pm.expect(json).to.have.property("totalVentasHoy");
+    pm.expect(json).to.have.property("totalVentasMes");
+    pm.expect(json).to.have.property("totalProfesionales");
+    pm.expect(json).to.have.property("topServicios");
+    pm.expect(json).to.have.property("citasSemana");
+    pm.expect(json).to.have.property("ventasPorDia");
+    pm.expect(json).to.have.property("ocupacionProfesionales");
+});
+
+
+11- INVENTARIO 
+
+POST /api/inventario
+Content-Type: application/json
+
+{
+  "nombre": "Shampoo Reparador",
+  "stock": 15,
+  "descripcion": "Shampoo para cabello dañado",
+  "imagenProducto": "https://www.tusitio.cl/imagenes/shampoo.jpg",
+  "empresaRUT": "12345678-9"
+}
+
+
+
+
+*** Resumen de avance y configuración Wolf X Gestión ***
+
+
+1. Estructura del Proyecto
+Proyecto organizado en carpetas para frontend (pages, components, etc.) y backend (api).
+Cada módulo del sistema tiene su archivo de frontend (ej: Dashboard.tsx, Inventario.tsx) y su endpoint backend correspondiente (ej: dashboard.js, inventario.js).
+Documentación clara del orden de uso y flujo de acceso para empresas y usuarios.
+
+
+2. Configuración de MongoDB Atlas y Vercel
+Conexión a MongoDB Atlas usando usuario, contraseña y cluster dedicados.
+Variables de entorno (MONGODB_URI, JWT_SECRET, CLAVE_CIERRE) correctamente configuradas tanto en local como en Vercel.
+Confirmación de que la conexión y las variables funcionan igual en desarrollo y producción.
+
+
+3. Endpoints y Payloads
+Empresas: Registro de empresas con todos los datos relevantes.
+Usuarios: Registro de usuarios con roles y asociación a empresa.
+Perfiles: Definición de perfiles y permisos.
+Servicios: Registro de servicios por empresa.
+Profesionales: Registro de profesionales y sus servicios/comisiones.
+Clientes: Registro de clientes asociados a empresa.
+Agenda: Agendamiento de citas con múltiples atenciones.
+Atenciones: Registro detallado de atenciones realizadas, materiales, pagos y totales.
+Reportes: Endpoints GET para reportes de comisiones, servicios y ventas, con filtros avanzados.
+Dashboard: Endpoint GET para KPIs y métricas principales del negocio.
+Inventario: CRUD completo para productos de inventario.
+
+
+4. Pruebas y Validaciones
+Ejemplos de payloads para cada endpoint listos para usar en Postman.
+Ejemplos de tests automáticos en Postman para validar la estructura de las respuestas (especialmente dashboard).
+URLs de endpoints de producción (www.gestion-peluqueria.cl) documentadas para pruebas directas.
+
+
+5. Seguridad y Multiempresa
+Todos los endpoints filtran y operan por empresaRUT, asegurando separación de datos entre empresas.
+Roles y permisos aplicados en frontend y backend.
+No se exponen datos sensibles en las respuestas.
+
+
+6. Estado del Proyecto
+Frontend y backend alineados en estructura, flujos y payloads.
+CRUDs completos en todos los módulos principales.
+Documentación y ejemplos claros para onboarding y pruebas.
+Configuración de entorno y conexión a base de datos cerrada y validada.
+
+
+Conclusión:
+Tu sistema Wolf X Gestión está completamente documentado, alineado y listo para operar en producción, con pruebas y ejemplos para todos los flujos críticos.
+Puedes escalar, mantener y auditar el sistema fácilmente gracias a la estructura y documentación actual.

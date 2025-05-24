@@ -744,7 +744,7 @@ const handlePrint = () => {
         {/* Encabezado destacado */}
         <div className="bg-white/90 rounded-lg shadow-lg p-6 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <h1 className="page-title mb-0 text-gray-900">Registro de Atenciones</h1>
-          {(user.role === "admin" || user.role === "recepcionista") && (
+          {(user.role === "admin" || user.role === "superadmin" || user.role === "recepcionista") && (
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button className="bg-salon-primary hover:bg-salon-secondary">

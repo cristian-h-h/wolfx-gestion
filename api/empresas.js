@@ -34,6 +34,13 @@ export default async function handler(req, res) {
         return res.status(409).json({ message: "Ya existe una empresa con ese RUT." });
       }
 
+      // Agrega campos de control de arriendo por defecto si no vienen en el body
+      empresa.arriendoActivo = empresa.arriendoActivo ?? true;
+      empresa.fechaUltimoPago = empresa.fechaUltimoPago ?? new Date();
+      empresa.fechaProximoPago = empresa.fechaProximoPago ?? new Date(new Date().setMonth(new Date().getMonth() + 1));
+      empresa.plan = empresa.plan ?? "Básico";
+      empresa.montoMensual = empresa.montoMensual ?? 25000;
+
       await db.collection("empresas").insertOne(empresa);
       return res.status(201).json({ message: "Empresa creada" });
     }

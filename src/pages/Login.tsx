@@ -6,12 +6,27 @@ import {
   CardHeader, 
   CardTitle,
   CardFooter
+  
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
+const LOCAL_EMAIL = "cyl.contadores@live.cl";
+const LOCAL_PASSWORD = "localhost@1977";
+const LOCAL_USER = {
+  email: LOCAL_EMAIL,
+  role: "superadmin",
+  permissions: [
+    "dashboard", "citas", "clientes", "servicios",
+    "profesionales", "inventario", "reportes", "admin"
+  ],
+  empresaRUT: "00000000-0",
+  empresa: { nombreFantasia: "WolfX Dev", rut: "00000000-0" }
+};
+
 
 export default function Login() {
   const navigate = useNavigate();
@@ -45,6 +60,18 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+
+     // --- ACCESO LOCAL SUPERADMIN ---
+  if (
+    formData.username === LOCAL_EMAIL &&
+    formData.password === LOCAL_PASSWORD
+  ) {
+    localStorage.setItem("user", JSON.stringify(LOCAL_USER));
+    toast.success("Acceso de superadmin local");
+    navigate("/dashboard");
+    setIsLoading(false);
+    return;
+  }
 
     try {
       const response = await fetch("/api/auth", {

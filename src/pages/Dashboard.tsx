@@ -54,7 +54,7 @@ export default function Dashboard() {
   }, [navigate]);
 
   if (!user) return null;
-  if (!["admin", "gerente"].includes(user.role)) return <AccessDenied />;
+  if (!["admin", "gerente", "superadmin"].includes(user.role)) return <AccessDenied />;
   if (loading) return <div>Cargando dashboard...</div>;
 
   // Formatear precios en CLP

@@ -51,7 +51,7 @@ export default function Comisiones() {
 
   // Verificar si el usuario actual es administrador
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const isAdmin = user.role === "admin";
+  const isAdmin = user.role === "admin" || user.role === "superadmin";
 
   // Filtrar reglas por profesional
   const filteredRules = selectedProfessional === "all"

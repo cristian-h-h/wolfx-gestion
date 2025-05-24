@@ -25,6 +25,7 @@ import EmpresasAdmin from "./pages/admin/EmpresasAdmin";
 import UsuariosAdmin from "./pages/admin/UsuariosAdmin";
 import PerfilesAdmin from "./pages/admin/PerfilesAdmin";
 import RegistroEmpresa from "./pages/admin/RegistroEmpresa";
+import CerrarAcceso from "./pages/admin/CerrarAcceso";
 
 // Contexto de empresa
 import { EmpresaContext } from "./context/EmpresaContext";
@@ -218,6 +219,14 @@ const App = () => {
                 element={
                   <ProtectedRoute requiredPermission="admin">
                     <PerfilesAdmin />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/CerrarAcceso"
+                element={
+                  <ProtectedRoute requiredPermission="admin">
+                    <CerrarAcceso />
                   </ProtectedRoute>
                 }
               />

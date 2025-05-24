@@ -11,6 +11,14 @@ export default function AdminNavbar() {
       <Button variant="ghost" onClick={() => navigate("/admin/usuarios")}>Usuarios</Button>
       <Button variant="ghost" onClick={() => navigate("/admin/perfiles")}>Perfiles</Button>
       <Button variant="ghost" onClick={() => navigate("/admin/registro-empresa")}>Registrar Empresa</Button>
+      {/* Nuevo botón para cierre de acceso */}
+      <Button
+        variant="ghost"
+        className="text-red-600 font-semibold"
+        onClick={() => navigate("/admin/CerrarAcceso")}
+      >
+        Cerrar Acceso Empresa
+      </Button>
     </nav>
   );
 }

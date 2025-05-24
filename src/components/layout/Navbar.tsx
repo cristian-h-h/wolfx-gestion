@@ -45,7 +45,7 @@ if (userStr) {
          .filter(Boolean); // Elimina nulos
      }
       setUserPermissions(perms);
-      setIsAdmin(user.role === "admin");
+      setIsAdmin(user.role === "admin" || user.role === "superadmin");
     } catch (error) {
       console.error("Error parsing user data:", error);
       setUserPermissions([]);

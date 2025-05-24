@@ -39,7 +39,7 @@ export default async function handler(req, res) {
 
   // Busca la empresa asociada al usuario (asegura que no haya espacios)
   const rutBuscado = (user.empresaRUT || "").trim();
-  console.log("Buscando empresa con rut:", rutBuscado); // <-- AGREGA AQUÍ
+  console.log("Buscando empresa con rut:", rutBuscado);
   const empresa = await db.collection("empresas").findOne({ rut: rutBuscado });
   console.log("Empresa encontrada:", empresa);
 
@@ -48,8 +48,23 @@ export default async function handler(req, res) {
     ? {
         nombreFantasia: empresa.nombreFantasia,
         logo: empresa.logo,
+        fechaProximoPago: empresa.fechaProximoPago,
+        arriendoActivo: empresa.arriendoActivo
       }
     : {};
+
+  // Mensaje de vencimiento
+  let mensajeVencimiento = "";
+  if (empresa && empresa.fechaProximoPago) {
+    const hoy = new Date();
+    const proximo = new Date(empresa.fechaProximoPago);
+    const diff = Math.ceil((proximo - hoy) / (1000 * 60 * 60 * 24));
+    if (diff <= 7 && diff >= 0) {
+      mensajeVencimiento = `Próximo vencimiento: ${proximo.toLocaleDateString()}`;
+    } else if (diff < 0) {
+      mensajeVencimiento = `Arriendo vencido el: ${proximo.toLocaleDateString()}`;
+    }
+  }
 
   // No incluir la contraseña en el token ni en la respuesta
   const { password: _, ...userData } = user;
@@ -70,16 +85,18 @@ export default async function handler(req, res) {
   console.log("Usuario que se enviará:", {
     ...userData,
     permissions: userData.permissions || [],
-    empresa: empresaData
+    empresa: empresaData,
+    mensajeVencimiento
   });
 
-  // Incluye permisos y empresa en la respuesta
+  // Incluye permisos, empresa y mensaje de vencimiento en la respuesta
   return res.status(200).json({
     token,
     user: {
       ...userData,
       permissions: userData.permissions || [],
-      empresa: empresaData
+      empresa: empresaData,
+      mensajeVencimiento
     }
   });
 }

@@ -54,8 +54,8 @@ export default function Reportes() {
 
   // Control de acceso: solo admin, gerente y contador pueden ver reportes
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-  if (!["admin", "gerente", "contador"].includes(user.role)) {
-    return <AccessDenied />;
+  if (!["admin", "gerente", "contador", "superadmin"].includes(user.role)) {
+  return <AccessDenied />;
   }
 
   // Formatear precio en pesos chilenos

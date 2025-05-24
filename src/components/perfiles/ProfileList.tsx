@@ -59,13 +59,15 @@ export const ProfileList = ({
                 <TableCell>
                   <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      profile.role === "admin"
+                     profile.role === "admin" || profile.role === "superadmin"
                         ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300"
                         : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
                     }`}
                   >
                     {profile.role === "admin"
                       ? "Administrador"
+                      : profile.role === "superadmin"
+                      ? "Superadmin"
                       : profile.role.charAt(0).toUpperCase() + profile.role.slice(1)}
                   </span>
                 </TableCell>

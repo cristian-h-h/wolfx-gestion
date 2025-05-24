@@ -10,16 +10,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 
-interface ProfessionalCategory {
-  category: string;
+interface ProfessionalService {
+  serviceId: string;
   commission: number;
 }
-
 interface Professional {
-  _id: string;
+  _id?: string;
   internalCode: string;
   name: string;
-  categories: ProfessionalCategory[];
+  services: ProfessionalService[];
   phone: string;
   email: string;
   address: string;
@@ -40,16 +39,19 @@ export default function Profesionales() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [services, setServices] = useState<{ _id: string; name: string; category: string }[]>([]);
+
   const [newCategoryName, setNewCategoryName] = useState("");
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("professionals");
   const [loading, setLoading] = useState(true);
   const [catLoading, setCatLoading] = useState(true);
-  const [form, setForm] = useState({
+
+  const [form, setForm] = useState<Professional>({
     internalCode: "",
     name: "",
-    categories: [{ category: "", commission: 25 }],
+    services: [{ serviceId: "", commission: 25 }],
     phone: "",
     email: "",
     address: "",
@@ -60,7 +62,7 @@ export default function Profesionales() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const empresaRUT = user.empresaRUT;
 
-  // --- GET: Cargar profesionales y categorías desde la API ---
+  // --- GET: Cargar profesionales, categorías y servicios desde la API ---
   useEffect(() => {
     if (!empresaRUT) return;
     setLoading(true);
@@ -85,14 +87,49 @@ export default function Profesionales() {
       .catch(() => setCatLoading(false));
   }, [empresaRUT]);
 
+  useEffect(() => {
+    if (!empresaRUT) return;
+    fetch(`/api/servicios?empresaRUT=${empresaRUT}`)
+      .then(res => res.json())
+      .then(data => setServices(data))
+      .catch(() => setServices([]));
+  }, [empresaRUT]);
+
   // Filtrar profesionales por término de búsqueda
   const filteredProfessionals = professionals.filter(
     (professional) =>
       professional.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      professional.categories.some(cat =>
-        cat.category.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      professional.services.some(srv => {
+        const service = services.find(s => s._id === srv.serviceId);
+        return service && service.name.toLowerCase().includes(searchTerm.toLowerCase());
+      })
   );
+
+  // --- Funciones auxiliares para servicios en el formulario ---
+  const handleAddServiceToForm = () => {
+    setForm(f => ({
+      ...f,
+      services: [...f.services, { serviceId: "", commission: 25 }],
+    }));
+  };
+
+  const handleRemoveServiceFromForm = (idx: number) => {
+    setForm(f => ({
+      ...f,
+      services: f.services.filter((_, i) => i !== idx),
+    }));
+  };
+
+  const handleServiceChange = (idx: number, field: "serviceId" | "commission", value: string) => {
+    setForm(f => ({
+      ...f,
+      services: f.services.map((srv, i) =>
+        i === idx
+          ? { ...srv, [field]: field === "commission" ? Number(value) : value }
+          : srv
+      ),
+    }));
+  };
 
   // --- POST: Agregar profesional ---
   const handleAddProfessional = async (e: React.FormEvent) => {
@@ -110,11 +147,11 @@ export default function Profesionales() {
       return;
     }
     if (
-      form.categories.some(
-        (cat) => !cat.category || cat.commission < 0 || cat.commission > 100
+      form.services.some(
+        (srv) => !srv.serviceId || srv.commission < 0 || srv.commission > 100
       )
     ) {
-      toast("Completa todas las categorías y porcentajes válidos.");
+      toast("Completa todos los servicios y porcentajes válidos.");
       return;
     }
     const res = await fetch("/api/profesionales", {
@@ -123,7 +160,7 @@ export default function Profesionales() {
       body: JSON.stringify({
         internalCode: form.internalCode,
         name: form.name,
-        categories: form.categories,
+        services: form.services,
         phone: form.phone,
         email: form.email,
         address: form.address,
@@ -138,7 +175,7 @@ export default function Profesionales() {
       setForm({
         internalCode: "",
         name: "",
-        categories: [{ category: "", commission: 25 }],
+        services: [{ serviceId: "", commission: 25 }],
         phone: "",
         email: "",
         address: "",
@@ -166,11 +203,11 @@ export default function Profesionales() {
       return;
     }
     if (
-      form.categories.some(
-        (cat) => !cat.category || cat.commission < 0 || cat.commission > 100
+      form.services.some(
+        (srv) => !srv.serviceId || srv.commission < 0 || srv.commission > 100
       )
     ) {
-      toast("Completa todas las categorías y porcentajes válidos.");
+      toast("Completa todos los servicios y porcentajes válidos.");
       return;
     }
     const res = await fetch("/api/profesionales", {
@@ -180,7 +217,7 @@ export default function Profesionales() {
         id: editId,
         internalCode: form.internalCode,
         name: form.name,
-        categories: form.categories,
+        services: form.services,
         phone: form.phone,
         email: form.email,
         address: form.address,
@@ -197,7 +234,7 @@ export default function Profesionales() {
                 ...p,
                 internalCode: form.internalCode,
                 name: form.name,
-                categories: form.categories,
+                services: form.services,
                 phone: form.phone,
                 email: form.email,
                 address: form.address,
@@ -212,7 +249,7 @@ export default function Profesionales() {
       setForm({
         internalCode: "",
         name: "",
-        categories: [{ category: "", commission: 25 }],
+        services: [{ serviceId: "", commission: 25 }],
         phone: "",
         email: "",
         address: "",
@@ -239,11 +276,11 @@ export default function Profesionales() {
 
   // Abrir diálogo de edición y cargar datos
   const openEditDialog = (professional: Professional) => {
-    setEditId(professional._id);
+    setEditId(professional._id || null);
     setForm({
       internalCode: professional.internalCode,
       name: professional.name,
-      categories: professional.categories.map(c => ({ ...c })),
+      services: professional.services.map(s => ({ ...s })),
       phone: professional.phone,
       email: professional.email,
       address: professional.address,
@@ -251,39 +288,6 @@ export default function Profesionales() {
       active: professional.active,
     });
     setIsEditDialogOpen(true);
-  };
-
-  // Agregar una categoría al formulario (máximo 3)
-  const handleAddCategoryToForm = () => {
-    if (form.categories.length < 3) {
-      setForm((f) => ({
-        ...f,
-        categories: [...f.categories, { category: "", commission: 25 }],
-      }));
-    }
-  };
-
-  // Eliminar una categoría del formulario
-  const handleRemoveCategoryFromForm = (idx: number) => {
-    setForm((f) => ({
-      ...f,
-      categories: f.categories.filter((_, i) => i !== idx),
-    }));
-  };
-
-  // Actualizar categoría o comisión en el formulario
-  const handleCategoryChange = (idx: number, field: "category" | "commission", value: string) => {
-    setForm((f) => ({
-      ...f,
-      categories: f.categories.map((cat, i) =>
-        i === idx
-          ? {
-              ...cat,
-              [field]: field === "commission" ? Number(value) : value,
-            }
-          : cat
-      ),
-    }));
   };
 
   // --- Categorías generales ---
@@ -354,7 +358,7 @@ export default function Profesionales() {
       <div className="space-y-6 animate-fade-in">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0 bg-[#f8f8fa] rounded-lg p-6">
           <h1 className="page-title mb-0">Gestión de Profesionales</h1>
-          {(user.role === "admin") && (
+          {(user.role === "admin" || user.role === "superadmin") && (
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button className="bg-salon-primary hover:bg-salon-secondary">
@@ -386,23 +390,23 @@ export default function Profesionales() {
                       required
                     />
                   </div>
-                  {/* Selección de hasta 3 categorías y porcentaje */}
+                  {/* Selección de servicios y porcentaje */}
                   <div className="space-y-2">
-                    <Label>Categorías y porcentaje de comisión</Label>
-                    {form.categories.map((cat, idx) => (
+                    <Label>Servicios y % comisión</Label>
+                    {form.services.map((srv, idx) => (
                       <div key={idx} className="flex gap-2 items-center mb-2">
                         <Select
-                          value={cat.category}
-                          onValueChange={value => handleCategoryChange(idx, "category", value)}
+                          value={srv.serviceId}
+                          onValueChange={value => handleServiceChange(idx, "serviceId", value)}
                           required
                         >
-                          <SelectTrigger className="w-40">
-                            <SelectValue placeholder="Categoría" />
+                          <SelectTrigger className="w-56">
+                            <SelectValue placeholder="Servicio" />
                           </SelectTrigger>
                           <SelectContent>
-                            {categories.map((category) => (
-                              <SelectItem key={category._id} value={category.name}>
-                                {category.name}
+                            {services.map(service => (
+                              <SelectItem key={service._id} value={service._id}>
+                                {service.name} ({service.category})
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -412,35 +416,33 @@ export default function Profesionales() {
                           min={0}
                           max={100}
                           className="w-24"
-                          value={cat.commission}
-                          onChange={e => handleCategoryChange(idx, "commission", e.target.value)}
+                          value={srv.commission}
+                          onChange={e => handleServiceChange(idx, "commission", e.target.value)}
                           placeholder="% comisión"
                           required
                         />
-                        {form.categories.length > 1 && (
+                        {form.services.length > 1 && (
                           <Button
                             type="button"
                             size="icon"
                             variant="ghost"
-                            onClick={() => handleRemoveCategoryFromForm(idx)}
-                            title="Eliminar categoría"
+                            onClick={() => handleRemoveServiceFromForm(idx)}
+                            title="Eliminar servicio"
                           >
                             <X className="h-4 w-4" />
                           </Button>
                         )}
                       </div>
                     ))}
-                    {form.categories.length < 3 && (
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        onClick={handleAddCategoryToForm}
-                        className="mt-1"
-                      >
-                        <Plus className="h-4 w-4 mr-1" /> Agregar categoría
-                      </Button>
-                    )}
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={handleAddServiceToForm}
+                      className="mt-1"
+                    >
+                      <Plus className="h-4 w-4 mr-1" /> Agregar servicio
+                    </Button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
@@ -514,7 +516,7 @@ export default function Profesionales() {
             </Dialog>
           )}
           {/* Diálogo para editar profesional */}
-          {(user.role === "admin") && (
+          {(user.role === "admin" || user.role === "superadmin") && (
             <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
               <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
@@ -539,23 +541,23 @@ export default function Profesionales() {
                       required
                     />
                   </div>
-                  {/* Selección de hasta 3 categorías y porcentaje */}
+                  {/* Selección de servicios y porcentaje */}
                   <div className="space-y-2">
-                    <Label>Categorías y porcentaje de comisión</Label>
-                    {form.categories.map((cat, idx) => (
+                    <Label>Servicios y % comisión</Label>
+                    {form.services.map((srv, idx) => (
                       <div key={idx} className="flex gap-2 items-center mb-2">
                         <Select
-                          value={cat.category}
-                          onValueChange={value => handleCategoryChange(idx, "category", value)}
+                          value={srv.serviceId}
+                          onValueChange={value => handleServiceChange(idx, "serviceId", value)}
                           required
                         >
-                          <SelectTrigger className="w-40">
-                            <SelectValue placeholder="Categoría" />
+                          <SelectTrigger className="w-56">
+                            <SelectValue placeholder="Servicio" />
                           </SelectTrigger>
                           <SelectContent>
-                            {categories.map((category) => (
-                              <SelectItem key={category._id} value={category.name}>
-                                {category.name}
+                            {services.map(service => (
+                              <SelectItem key={service._id} value={service._id}>
+                                {service.name} ({service.category})
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -565,35 +567,33 @@ export default function Profesionales() {
                           min={0}
                           max={100}
                           className="w-24"
-                          value={cat.commission}
-                          onChange={e => handleCategoryChange(idx, "commission", e.target.value)}
+                          value={srv.commission}
+                          onChange={e => handleServiceChange(idx, "commission", e.target.value)}
                           placeholder="% comisión"
                           required
                         />
-                        {form.categories.length > 1 && (
+                        {form.services.length > 1 && (
                           <Button
                             type="button"
                             size="icon"
                             variant="ghost"
-                            onClick={() => handleRemoveCategoryFromForm(idx)}
-                            title="Eliminar categoría"
+                            onClick={() => handleRemoveServiceFromForm(idx)}
+                            title="Eliminar servicio"
                           >
                             <X className="h-4 w-4" />
                           </Button>
                         )}
                       </div>
                     ))}
-                    {form.categories.length < 3 && (
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        onClick={handleAddCategoryToForm}
-                        className="mt-1"
-                      >
-                        <Plus className="h-4 w-4 mr-1" /> Agregar categoría
-                      </Button>
-                    )}
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={handleAddServiceToForm}
+                      className="mt-1"
+                    >
+                      <Plus className="h-4 w-4 mr-1" /> Agregar servicio
+                    </Button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
@@ -675,7 +675,7 @@ export default function Profesionales() {
               <div className="relative flex-grow">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
                 <Input
-                  placeholder="Buscar por nombre o categoría..."
+                  placeholder="Buscar por nombre o servicio..."
                   className="pl-8"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -689,7 +689,7 @@ export default function Profesionales() {
                   <TableRow>
                     <TableHead>Código</TableHead>
                     <TableHead>Nombre</TableHead>
-                    <TableHead>Categorías y % comisión</TableHead>
+                    <TableHead>Servicios y % comisión</TableHead>
                     <TableHead>Teléfono</TableHead>
                     <TableHead>Correo electrónico</TableHead>
                     <TableHead>Dirección</TableHead>
@@ -712,11 +712,15 @@ export default function Profesionales() {
                         <TableCell className="font-medium">{professional.name}</TableCell>
                         <TableCell>
                           <ul>
-                            {professional.categories.map((cat, idx) => (
-                              <li key={idx}>
-                                {cat.category} <span className="text-xs text-gray-500">({cat.commission}%)</span>
-                              </li>
-                            ))}
+                            {professional.services.map((srv, idx) => {
+                              const service = services.find(s => s._id === srv.serviceId);
+                              return (
+                                <li key={idx}>
+                                  {service ? `${service.name} (${service.category})` : "Servicio eliminado"}{" "}
+                                  <span className="text-xs text-gray-500">({srv.commission}%)</span>
+                                </li>
+                              );
+                            })}
                           </ul>
                         </TableCell>
                         <TableCell>{professional.phone}</TableCell>
@@ -746,7 +750,7 @@ export default function Profesionales() {
                             <Button
                               variant="destructive"
                               size="sm"
-                              onClick={() => handleDeleteProfessional(professional._id)}
+                              onClick={() => handleDeleteProfessional(professional._id!)}
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>

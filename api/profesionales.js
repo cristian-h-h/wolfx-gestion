@@ -5,26 +5,23 @@ export default async function handler(req, res) {
   const { db } = await connectToDatabase();
 
   // --- GET: Listar profesionales ---
-  // Permite filtrar por empresaRUT y búsqueda por nombre/categoría
+  // Permite filtrar por empresaRUT y búsqueda por nombre o servicio
   if (req.method === "GET") {
-    const { empresaRUT, search, categoria } = req.query;
+    const { empresaRUT, search } = req.query;
     if (!empresaRUT) {
       return res.status(400).json({ error: "Falta empresaRUT en la consulta" });
     }
     const filtro = { empresaRUT };
     if (search) {
       filtro.$or = [
-        { nombre: { $regex: search, $options: "i" } },
-        { categoria: { $regex: search, $options: "i" } },
+        { name: { $regex: search, $options: "i" } },
+        { "services.serviceId": { $regex: search, $options: "i" } },
       ];
-    }
-    if (categoria) {
-      filtro.categoria = categoria;
     }
     const profesionales = await db
       .collection("profesionales")
       .find(filtro)
-      .sort({ nombre: 1 })
+      .sort({ name: 1 })
       .limit(200)
       .toArray();
     return res.status(200).json(profesionales);
@@ -32,32 +29,81 @@ export default async function handler(req, res) {
 
   // --- POST: Agregar profesional ---
   if (req.method === "POST") {
-    const { nombre, categoria, email, telefono, empresaRUT } = req.body;
-    if (!nombre || !empresaRUT) {
+    const {
+      internalCode,
+      name,
+      services,
+      phone,
+      email,
+      address,
+      commune,
+      active,
+      empresaRUT,
+    } = req.body;
+
+    if (!name || !empresaRUT || !internalCode) {
       return res.status(400).json({ error: "Faltan campos obligatorios" });
     }
+    if (!Array.isArray(services) || services.length === 0) {
+      return res.status(400).json({ error: "Debes asignar al menos un servicio" });
+    }
+
     const profesional = {
-      nombre,
-      categoria: categoria ?? "",
+      internalCode,
+      name,
+      services,
+      phone: phone ?? "",
       email: email ?? "",
-      telefono: telefono ?? "",
+      address: address ?? "",
+      commune: commune ?? "",
+      active: active !== undefined ? !!active : true,
       empresaRUT,
       creadoEn: new Date(),
+      actualizadoEn: new Date(),
     };
+
     const result = await db.collection("profesionales").insertOne(profesional);
     return res.status(201).json({ message: "Profesional agregado", id: result.insertedId });
   }
 
   // --- PUT: Editar profesional ---
   if (req.method === "PUT") {
-    const { id, nombre, categoria, email, telefono, empresaRUT } = req.body;
-    if (!id || !empresaRUT) {
+    const {
+      id,
+      internalCode,
+      name,
+      services,
+      phone,
+      email,
+      address,
+      commune,
+      active,
+      empresaRUT,
+    } = req.body;
+
+    if (!id || !empresaRUT || !internalCode) {
       return res.status(400).json({ error: "Faltan campos obligatorios" });
     }
+    if (!Array.isArray(services) || services.length === 0) {
+      return res.status(400).json({ error: "Debes asignar al menos un servicio" });
+    }
+
     const { ObjectId } = require("mongodb");
     const result = await db.collection("profesionales").updateOne(
       { _id: new ObjectId(id), empresaRUT },
-      { $set: { nombre, categoria, email, telefono, actualizadoEn: new Date() } }
+      {
+        $set: {
+          internalCode,
+          name,
+          services,
+          phone: phone ?? "",
+          email: email ?? "",
+          address: address ?? "",
+          commune: commune ?? "",
+          active: active !== undefined ? !!active : true,
+          actualizadoEn: new Date(),
+        },
+      }
     );
     if (result.matchedCount === 0) {
       return res.status(404).json({ error: "Profesional no encontrado" });

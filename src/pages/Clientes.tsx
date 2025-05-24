@@ -167,7 +167,7 @@ export default function Clientes() {
       <div className="space-y-6 animate-fade-in">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0 bg-[#f8f8fa] rounded-lg p-6">
           <h1 className="page-title mb-0">Gestión de Clientes</h1>
-          {(user.role === "admin" || user.role === "recepcionista") && (
+          {(user.role === "admin" || user.role === "superadmin" || user.role === "recepcionista") && (
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button className="bg-salon-primary hover:bg-salon-secondary">

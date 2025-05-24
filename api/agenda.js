@@ -1,8 +1,8 @@
 import { connectToDatabase } from "./mongodb";
 
-// API para gestionar citas (agenda) multiempresa
 export default async function handler(req, res) {
   const { db } = await connectToDatabase();
+  const { ObjectId } = require("mongodb");
 
   // --- GET: Listar citas por fecha y empresa ---
   if (req.method === "GET") {
@@ -30,7 +30,6 @@ export default async function handler(req, res) {
     if (!cliente || !telefono || !atenciones || !empresaRUT || !fecha) {
       return res.status(400).json({ error: "Faltan campos obligatorios" });
     }
-    // Generar folio único (puedes mejorar esto según tus reglas)
     const folio = "CITA-" + Date.now();
     const cita = {
       folio,
@@ -43,6 +42,43 @@ export default async function handler(req, res) {
     };
     const result = await db.collection("citas").insertOne(cita);
     return res.status(201).json({ message: "Cita agendada", folio, id: result.insertedId });
+  }
+
+  // --- PUT: Editar cita ---
+  if (req.method === "PUT") {
+    const { id, cliente, telefono, atenciones, empresaRUT, fecha } = req.body;
+    if (!id || !cliente || !telefono || !atenciones || !empresaRUT || !fecha) {
+      return res.status(400).json({ error: "Faltan campos obligatorios" });
+    }
+    const result = await db.collection("citas").updateOne(
+      { _id: new ObjectId(id), empresaRUT },
+      {
+        $set: {
+          cliente,
+          telefono,
+          atenciones,
+          fecha: new Date(fecha),
+          actualizadoEn: new Date(),
+        },
+      }
+    );
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ error: "Cita no encontrada" });
+    }
+    return res.status(200).json({ message: "Cita actualizada" });
+  }
+
+  // --- DELETE: Eliminar cita ---
+  if (req.method === "DELETE") {
+    const { id, empresaRUT } = req.body;
+    if (!id || !empresaRUT) {
+      return res.status(400).json({ error: "Faltan campos obligatorios" });
+    }
+    const result = await db.collection("citas").deleteOne({ _id: new ObjectId(id), empresaRUT });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Cita no encontrada" });
+    }
+    return res.status(200).json({ message: "Cita eliminada" });
   }
 
   // --- Método no permitido ---
