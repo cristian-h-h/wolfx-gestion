@@ -518,3 +518,15 @@ Configuración de entorno y conexión a base de datos cerrada y validada.
 Conclusión:
 Tu sistema Wolf X Gestión está completamente documentado, alineado y listo para operar en producción, con pruebas y ejemplos para todos los flujos críticos.
 Puedes escalar, mantener y auditar el sistema fácilmente gracias a la estructura y documentación actual.
+
+
+
+Ruta de trabajo para acceso demo:
+Crea la empresa demo (empresaRUT: DEMO).
+Crea un perfil demo en la colección perfiles:
+email: demo@demo.cl
+password: demo123 (o la que prefieras)
+empresaRUT: DEMO
+permisos: todos los que quieras mostrar
+Puebla la base de datos de la empresa DEMO con datos de ejemplo (clientes, servicios, citas, atenciones, inventario, etc.).
+Comparte las credenciales demo en tu login o en tu web para que cualquier interesado pueda probar el sistema.
