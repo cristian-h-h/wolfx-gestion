@@ -1,4 +1,4 @@
-import { connectToDatabase } from "./mongodb";
+import { connectToDatabase } from "./mongodb.js";
 
 // API REST para inventario multiempresa
 export default async function handler(req, res) {

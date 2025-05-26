@@ -1,4 +1,4 @@
-import { connectToDatabase } from "./mongodb";
+import { connectToDatabase } from "./mongodb.js";
 
 // API para reportes multiempresa (comisiones, servicios, ventas de productos)
 export default async function handler(req, res) {

@@ -1,4 +1,4 @@
-import { connectToDatabase } from "./mongodb";
+import { connectToDatabase } from "./mongodb.js";
 
 const CLAVE_CIERRE = process.env.CLAVE_CIERRE || "123456"; // Usa una clave segura en tu .env
 
