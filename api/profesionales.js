@@ -1,4 +1,4 @@
-import { connectToDatabase } from "./mongodb";
+import { connectToDatabase } from "./mongodb.js";
 
 // API para gestionar profesionales multiempresa
 export default async function handler(req, res) {

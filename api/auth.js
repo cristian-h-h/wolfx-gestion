@@ -1,4 +1,4 @@
-import { connectToDatabase } from "./mongodb";
+import { connectToDatabase } from "./mongodb.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 

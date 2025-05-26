@@ -1,4 +1,4 @@
-import { connectToDatabase } from "./mongodb";
+import { connectToDatabase } from "./mongodb.js";
 
 // API para registrar y gestionar atenciones (citas realizadas) multiempresa
 export default async function handler(req, res) {
